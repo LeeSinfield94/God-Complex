@@ -26,6 +26,7 @@ namespace Unity.Template.CompetitiveActionMultiplayer
         public void SetSpawnOfNextRoom(Vector3 pos)
         {
             nextRoomsPosition = pos;
+            print(nextRoomsPosition);
         }
         public void SpawnRoom()
         {
