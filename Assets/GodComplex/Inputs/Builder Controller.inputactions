@@ -151,6 +151,56 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Zoom",
+            "id": "8273d0ed-d0f7-4243-952a-df4082299d4d",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Value",
+                    "id": "7c5669ae-acaa-44f7-a74f-e11a6ba4f3c7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "c2ec18cd-c287-412a-b906-3474868a75ad",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Positive",
+                    "id": "b73a9c91-7080-4d14-a1e8-d00a9b3faceb",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Negative",
+                    "id": "06edccf6-3203-4947-a161-6e1c6e3b93af",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
         }
     ],
     "controlSchemes": []

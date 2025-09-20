@@ -237,6 +237,56 @@ public partial class @BuilderController: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Zoom"",
+            ""id"": ""8273d0ed-d0f7-4243-952a-df4082299d4d"",
+            ""actions"": [
+                {
+                    ""name"": ""New action"",
+                    ""type"": ""Value"",
+                    ""id"": ""7c5669ae-acaa-44f7-a74f-e11a6ba4f3c7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""c2ec18cd-c287-412a-b906-3474868a75ad"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""b73a9c91-7080-4d14-a1e8-d00a9b3faceb"",
+                    ""path"": ""<Mouse>/scroll/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""06edccf6-3203-4947-a161-6e1c6e3b93af"",
+                    ""path"": ""<Mouse>/scroll/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -250,6 +300,9 @@ public partial class @BuilderController: IInputActionCollection2, IDisposable
         // UpDown
         m_UpDown = asset.FindActionMap("UpDown", throwIfNotFound: true);
         m_UpDown_Newaction = m_UpDown.FindAction("New action", throwIfNotFound: true);
+        // Zoom
+        m_Zoom = asset.FindActionMap("Zoom", throwIfNotFound: true);
+        m_Zoom_Newaction = m_Zoom.FindAction("New action", throwIfNotFound: true);
     }
 
     ~@BuilderController()
@@ -257,6 +310,7 @@ public partial class @BuilderController: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Move.enabled, "This will cause a leak and performance issues, BuilderController.Move.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Look.enabled, "This will cause a leak and performance issues, BuilderController.Look.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UpDown.enabled, "This will cause a leak and performance issues, BuilderController.UpDown.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Zoom.enabled, "This will cause a leak and performance issues, BuilderController.Zoom.Disable() has not been called.");
     }
 
     /// <summary>
@@ -616,6 +670,102 @@ public partial class @BuilderController: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="UpDownActions" /> instance referencing this action map.
     /// </summary>
     public UpDownActions @UpDown => new UpDownActions(this);
+
+    // Zoom
+    private readonly InputActionMap m_Zoom;
+    private List<IZoomActions> m_ZoomActionsCallbackInterfaces = new List<IZoomActions>();
+    private readonly InputAction m_Zoom_Newaction;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Zoom".
+    /// </summary>
+    public struct ZoomActions
+    {
+        private @BuilderController m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public ZoomActions(@BuilderController wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Zoom/Newaction".
+        /// </summary>
+        public InputAction @Newaction => m_Wrapper.m_Zoom_Newaction;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Zoom; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="ZoomActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(ZoomActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="ZoomActions" />
+        public void AddCallbacks(IZoomActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ZoomActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ZoomActionsCallbackInterfaces.Add(instance);
+            @Newaction.started += instance.OnNewaction;
+            @Newaction.performed += instance.OnNewaction;
+            @Newaction.canceled += instance.OnNewaction;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="ZoomActions" />
+        private void UnregisterCallbacks(IZoomActions instance)
+        {
+            @Newaction.started -= instance.OnNewaction;
+            @Newaction.performed -= instance.OnNewaction;
+            @Newaction.canceled -= instance.OnNewaction;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ZoomActions.UnregisterCallbacks(IZoomActions)" />.
+        /// </summary>
+        /// <seealso cref="ZoomActions.UnregisterCallbacks(IZoomActions)" />
+        public void RemoveCallbacks(IZoomActions instance)
+        {
+            if (m_Wrapper.m_ZoomActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="ZoomActions.AddCallbacks(IZoomActions)" />
+        /// <seealso cref="ZoomActions.RemoveCallbacks(IZoomActions)" />
+        /// <seealso cref="ZoomActions.UnregisterCallbacks(IZoomActions)" />
+        public void SetCallbacks(IZoomActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ZoomActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ZoomActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="ZoomActions" /> instance referencing this action map.
+    /// </summary>
+    public ZoomActions @Zoom => new ZoomActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Move" which allows adding and removing callbacks.
     /// </summary>
@@ -652,6 +802,21 @@ public partial class @BuilderController: IInputActionCollection2, IDisposable
     /// <seealso cref="UpDownActions.AddCallbacks(IUpDownActions)" />
     /// <seealso cref="UpDownActions.RemoveCallbacks(IUpDownActions)" />
     public interface IUpDownActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnNewaction(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Zoom" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="ZoomActions.AddCallbacks(IZoomActions)" />
+    /// <seealso cref="ZoomActions.RemoveCallbacks(IZoomActions)" />
+    public interface IZoomActions
     {
         /// <summary>
         /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
